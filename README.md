@@ -1,6 +1,6 @@
 # index.duckarchive.com
 
-1. (List of Family Search records related to Ukraine](https://www.familysearch.org/search/collection/list?ec=region%3AUkraine%2CplaceId%3A1927132%2Cregion%3AContinental+Europe&fcs=placeId%3A1927132&count=100):
+1. [List of Family Search records related to Ukraine](https://www.familysearch.org/search/collection/list?ec=region%3AUkraine%2CplaceId%3A1927132%2Cregion%3AContinental+Europe&fcs=placeId%3A1927132&count=100):
 ```
 const token = document.cookie.split("fssessionid=")[1].split(";")[0];
 fetch("https://www.familysearch.org/search/webservice/collectionListData", {
