@@ -12,3 +12,55 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  ADMIN
+  EDITOR
+  USER
+}
+
+model User {
+  id         String    @id @default(uuid()) @db.Uuid
+  email      String    @unique
+  name       String?
+  role       Role      @default(USER)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @updatedAt @db.Timestamp(6)
+  persons    Person[]
+
+  @@map("users")
+}
+
+model Person {
+  first_name             String    @db.VarChar(255)
+  first_name_normalized  String?   @db.VarChar(255)
+  last_name              String    @db.VarChar(255)
+  last_name_normalized   String?   @db.VarChar(255)
+  middle_name            String?   @db.VarChar(255)
+  middle_name_normalized String?   @db.VarChar(255)
+  birth_date             String    @db.VarChar(255)
+  birth_date_normalized  DateTime?
+  record_id              String    @db.Uuid
+  record_date            String    @db.VarChar(255)
+  record_date_normalized DateTime?
+  birth_place            String    @db.VarChar(255)
+  birth_place_lat        Float
+  birth_place_lon        Float
+  record_place           String    @db.VarChar(255)
+  record_place_lat       Float?
+  record_place_lon       Float?
+  record_type            String    @db.VarChar(255)
+  record_type_normalized String?   @db.VarChar(255)
+  archive                String    @db.VarChar(255)
+  fund                   String    @db.VarChar(255)
+  description            String    @db.VarChar(255)
+  case                   String    @db.VarChar(255)
+  page                   String?   @db.VarChar(255)
+  created_at             DateTime  @default(now()) @db.Timestamp(6)
+  updated_at             DateTime? @updatedAt @db.Timestamp(6)
+  author_id              String    @db.Uuid
+  author                 User      @relation(fields: [author_id], references: [id])
+
+  @@unique([first_name, last_name, birth_date, record_id, author_id])
+  @@map("persons")
+}
