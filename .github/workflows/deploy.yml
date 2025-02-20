@@ -29,5 +29,6 @@ jobs:
           SSH_USER: ${{ env.SSH_USER }}
           DEPLOY_PATH: ${{ env.DEPLOY_PATH }}
         run: |
+          eval "$(ssh-agent -s)"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           rsync -avz --delete --exclude='.git' "ssh -p $SSH_PORT" ./ $SSH_USER@$SSH_HOST:$DEPLOY_PATH
