@@ -22,15 +22,15 @@ jobs:
       - run: pnpm run build
 
       - name: Run deploy
-        uses: easingthemes/ssh-deploy@main
+        uses: easingthemes/ssh-deploy@v5.1.0
         with:
-          SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i"
           SOURCE: "./"
-          REMOTE_HOST: ${{ env.SSH_HOST }}
-          REMOTE_PORT: ${{ env.SSH_PORT }}
-          REMOTE_USER: ${{ env.SSH_USER }}
-          TARGET: ${{ env.DEPLOY_PATH }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          TARGET: ${{ secrets.DEPLOY_PATH }}
           EXCLUDE: ".git"
           SCRIPT_BEFORE: |
             whoami
