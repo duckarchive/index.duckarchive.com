@@ -35,6 +35,6 @@ jobs:
           EXCLUDE: ".git, .github, node_modules, .next"
           SCRIPT_AFTER: |
             PNPM_PATH=$(which pnpm)
-            $PNPM_PAT install
-            $PNPM_PAT run build
+            $PNPM_PATH install
+            $PNPM_PATH run build
             echo "Deployed successfully"
