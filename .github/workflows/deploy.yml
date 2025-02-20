@@ -10,25 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '20'
           cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm run build
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build Next.js application
-        run: pnpm run build
-
-      - name: Deploy to server
+      - name: deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
