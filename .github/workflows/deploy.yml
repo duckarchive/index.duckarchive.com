@@ -31,11 +31,10 @@ jobs:
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_PORT: ${{ secrets.SSH_PORT }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
-          TARGET: ${{ secrets.DEPLOY_PATH }}
+          TARGET: ${{ secrets.DEPLOY_PATH }}/web/index.duckarchive.com
           EXCLUDE: ".git, .github, node_modules, .next"
           SCRIPT_AFTER: |
-            PNPM_PATH=$(which pnpm)
-            echo "Deploying..."
+            PNPM_PATH=${{ secrets.DEPLOY_PATH }}/.local/share/pnpm/pnpm
             echo "PNPM_PATH: $PNPM_PATH"
             $PNPM_PATH install
             $PNPM_PATH run build
