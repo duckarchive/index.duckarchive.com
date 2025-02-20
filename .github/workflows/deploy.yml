@@ -32,11 +32,8 @@ jobs:
           REMOTE_PORT: ${{ secrets.SSH_PORT }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
           TARGET: ${{ secrets.DEPLOY_PATH }}
-          EXCLUDE: ".git"
-          SCRIPT_BEFORE: |
-            whoami
-            ls -al
+          EXCLUDE: ".git, .github, node_modules, .next"
           SCRIPT_AFTER: |
-            whoami
-            ls -al
-            echo $RSYNC_STDOUT
+            pnpm install
+            pnpm run build
+            echo "Deployed successfully"
