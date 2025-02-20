@@ -34,6 +34,7 @@ jobs:
           TARGET: ${{ secrets.DEPLOY_PATH }}/web/index.duckarchive.com
           EXCLUDE: ".git, .github, node_modules, .next"
           SCRIPT_AFTER: |
+            cd ${{ secrets.DEPLOY_PATH }}/web/index.duckarchive.com
             pnpm install
             pnpm run build
             echo "Deployed successfully"
