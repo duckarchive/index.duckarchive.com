@@ -43,8 +43,9 @@ model Person {
   first_name_normalized  String?   @db.VarChar(255) // "іван"
   last_name              String    @db.VarChar(255) // "мельник"
   last_name_normalized   String?   @db.VarChar(255) // "мельник"
-  middle_name            String?   @db.VarChar(255) // "іоанов"
-  middle_name_normalized String?   @db.VarChar(255) // "іванович"
+  middle_name            String?   @db.VarChar(255) // "стефанов"
+  father_name_normalized String?   @db.VarChar(255) // "степан"
+  is_male                Boolean?  // true – на основі нормалізованого імені
   birth_date             String    @db.VarChar(255) // "1900"
   is_birth_date_approx   Boolean   @default(false) // true
   birth_date_normalized  DateTime? // "1900-01-01T00:00:00.000Z"
@@ -79,4 +80,12 @@ model Person {
   @@index([last_name(ops: raw("gin_trgm_ops"))], type: Gin, name: "last_name_gin_trgm_ops_idx")
   @@index([middle_name(ops: raw("gin_trgm_ops"))], type: Gin, name: "middle_name_gin_trgm_ops_idx")
   @@map("persons")
+}
+
+model FirstName {
+  name            String @unique
+  normalized_name String
+  is_male         Boolean
+
+  @@map("first_names")
 }
