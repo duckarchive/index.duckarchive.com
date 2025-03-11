@@ -45,7 +45,7 @@ model Person {
   last_name_normalized   String?   @db.VarChar(255) // "мельник"
   middle_name            String?   @db.VarChar(255) // "стефанов"
   father_name_normalized String?   @db.VarChar(255) // "степан"
-  is_male                Boolean?  // true – на основі нормалізованого імені
+  is_male                Boolean? // true – на основі нормалізованого імені
   birth_date             String    @db.VarChar(255) // "1900"
   is_birth_date_approx   Boolean   @default(false) // true
   birth_date_normalized  DateTime? // "1900-01-01T00:00:00.000Z"
@@ -83,7 +83,7 @@ model Person {
 }
 
 model FirstName {
-  name            String @unique
+  name            String  @unique
   normalized_name String
   is_male         Boolean
 
