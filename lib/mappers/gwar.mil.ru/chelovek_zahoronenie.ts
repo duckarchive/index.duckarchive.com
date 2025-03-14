@@ -1,4 +1,15 @@
-export const title = "Захоронение";
+import { Person } from "@prisma/client";
+
+import { FileFormat } from "@/types";
+
+export const config = {
+  format: FileFormat.JSON,
+  title: "Захоронение",
+};
+
+export const parse = (data: string): Person[] => {
+  return [];
+};
 
 // {
 //   "_index": "gwar_2023_08_16",
