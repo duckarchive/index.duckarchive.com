@@ -41,13 +41,13 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        {/* <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
+        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+          {/* <div className="relative flex flex-col h-screen">
             <Navbar /> */}
-        <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-          {children}
-        </main>
-        {/* <footer className="w-full flex items-center justify-center py-3">
+          <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+            {children}
+          </main>
+          {/* <footer className="w-full flex items-center justify-center py-3">
               <Link
                 isExternal
                 className="flex items-center gap-1 text-current"
@@ -58,8 +58,8 @@ export default function RootLayout({
                 <p className="text-primary">HeroUI</p>
               </Link>
             </footer>
-          </div>
-        </Providers> */}
+          </div> */}
+        </Providers>
       </body>
     </html>
   );
