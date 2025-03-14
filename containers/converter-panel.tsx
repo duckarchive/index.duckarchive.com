@@ -1,24 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, SelectItem } from "@heroui/select";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/button";
 import Papa from "papaparse";
 
 import useMappers from "@/app/hooks/useMappers";
-import { FileFormat } from "@/types";
-
-type ParsedFileContent = Record<string, string>[];
+import { FileFormat, ParsedFileContent } from "@/types";
 
 const ConverterPanel: React.FC = () => {
   const resourcesWithMappers = useMappers();
   const [activeFileFormat, setActiveFileFormat] = useState<FileFormat>();
   const [activeResource, setActiveResource] = useState<string>();
   const [activeMapper, setActiveMapper] = useState<string>();
-  const [inputFileContent, setInputFileContent] = useState<ParsedFileContent>(
-    []
-  );
+  const [inputContent, setInputContent] = useState<ParsedFileContent>([]);
+
+  useEffect(() => {
+    if (!activeFileFormat || !activeResource || !activeMapper) {
+      return;
+    }
+
+    const activeMapperInstance = resourcesWithMappers
+      .find((resource) => resource.title === activeResource)
+      ?.mappers.find((Mapper) => Mapper.title === activeMapper);
+
+    if (!activeMapperInstance) {
+      return;
+    }
+
+    const parsedContent = activeMapperInstance.parse(inputContent);
+
+    console.log(parsedContent);
+  }, [inputContent]);
 
   const handleFileFormatChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setActiveFileFormat(e.target.value as FileFormat);
@@ -53,15 +67,12 @@ const ConverterPanel: React.FC = () => {
             complete: (results) => {
               parsedContent = results.data as ParsedFileContent;
             },
-            error: (error) => {
-              console.error("Error parsing CSV:", error);
-            },
           });
         } else if (activeFileFormat === "json") {
           parsedContent = JSON.parse(fileContent as string);
         }
 
-        setInputFileContent(parsedContent);
+        setInputContent(parsedContent);
       }
     };
     reader.readAsText(file);
@@ -71,10 +82,8 @@ const ConverterPanel: React.FC = () => {
     resourcesWithMappers.find((resource) => resource.title === activeResource)
       ?.mappers || [];
 
-  console.log(inputFileContent);
-
   return (
-    <section className="flex flex-col gap-4 h-[80vh]">
+    <section className="flex flex-col gap-4">
       <div aria-label="converter-panel" className="flex gap-4">
         <Select
           label="Оберіть формат файлу"
@@ -114,14 +123,8 @@ const ConverterPanel: React.FC = () => {
           />
           <Textarea
             isReadOnly
-            className="grow basis-full"
             label="Ваші дані"
             placeholder="TODO: Implement file content preview + manual entering"
-            value={
-              inputFileContent.length > 0
-                ? JSON.stringify(inputFileContent, null, 2).slice(0, 5000)
-                : ""
-            }
           />
         </div>
         <div className="flex flex-col gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded-lg basis-1/2">

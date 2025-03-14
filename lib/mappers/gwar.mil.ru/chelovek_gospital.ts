@@ -1,16 +1,11 @@
-import { Person } from "@prisma/client";
-
-import { FileFormat } from "@/types";
+import { FileFormat, Mapper } from "@/types";
 
 export const config = {
   format: FileFormat.JSON,
   title: "Госпиталь",
 };
 
-export const parse = (data: string): Person[] => {
-  return [];
-};
-
+// INPUT
 // {
 //   "_index": "gwar_2023_08_16",
 //   "_type": "chelovek_gospital",
@@ -82,3 +77,34 @@ export const parse = (data: string): Person[] => {
 //     "archive_id": 1
 //   }
 // }
+
+export const parse: Mapper["parse"] = (content) =>
+  content.map(({ _source }) => ({
+    first_name: _source.first_name,
+    last_name: _source.last_name,
+    middle_name: _source.middle_name,
+    birth_date: _source.birth_date || "",
+    birth_place: [
+      _source.birth_place_gubernia,
+      _source.birth_place_uezd,
+      _source.birth_place_volost,
+      _source.birth_place_np_type,
+      _source.birth_place,
+    ]
+      .filter(Boolean)
+      .join(", "),
+    record_date: _source.event_date_from || "",
+    record_date_normalized: _source.event_date_from
+      ? new Date(_source.event_date_from)
+      : null,
+    record_place: _source.vibitie_mesto,
+    record_type: _source.doc_type,
+    archive: _source.archive_short,
+    fund: _source.fund_num,
+    description: _source.inventory_num || _source.box,
+    case: _source.document_num,
+    page: _source.documents_pages.pages_id.join(", "),
+    note: null,
+    author_id: "",
+    resource_id: "gwar.mil.ru",
+  }));

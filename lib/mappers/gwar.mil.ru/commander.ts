@@ -1,13 +1,11 @@
-import { Person } from "@prisma/client";
-
-import { FileFormat } from "@/types";
+import { FileFormat, Mapper } from "@/types";
 
 export const config = {
   format: FileFormat.JSON,
   title: "Командующий",
 };
 
-export const parse = (data: string): Person[] => {
+export const parse: Mapper["parse"] = (content) => {
   return [];
 };
 
