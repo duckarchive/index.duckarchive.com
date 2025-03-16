@@ -78,6 +78,18 @@ const ConverterPanel: React.FC = () => {
     reader.readAsText(file);
   };
 
+  const handleDownloadResult = () => {
+    const csv = Papa.unparse(inputContent);
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "result.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const activeResourceMappers =
     resourcesWithMappers.find((resource) => resource.title === activeResource)
       ?.mappers || [];
@@ -128,7 +140,11 @@ const ConverterPanel: React.FC = () => {
           />
         </div>
         <div className="flex flex-col gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded-lg basis-1/2">
-          <Button isDisabled size="lg">
+          <Button
+            isDisabled={!inputContent.length}
+            size="lg"
+            onPress={handleDownloadResult}
+          >
             Завантажити результат
           </Button>
           <Textarea
