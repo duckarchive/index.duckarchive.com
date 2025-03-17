@@ -10,7 +10,7 @@ export enum FileFormat {
   JSON = "json",
 }
 
-export type ParsedFileContent = Record<string, any>[];
+export type InputFileContent = Record<string, any>[];
 
 export type PersonToSave = Omit<
   Person,
@@ -35,5 +35,5 @@ export type PersonToSave = Omit<
 export type Mapper = {
   title: string;
   format: FileFormat;
-  parse: (content: ParsedFileContent) => PersonToSave[];
+  parse: (content: InputFileContent) => PersonToSave[];
 };

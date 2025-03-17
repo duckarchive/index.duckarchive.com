@@ -1,9 +1,9 @@
-export const s = (data: any): string => {
+export const s = (data: any): string | null => {
   if (data === null) {
-    return "null";
+    return null;
   }
   if (typeof data === "undefined") {
-    return "undefined";
+    return null;
   }
   if (typeof data === "string") {
     return data;
@@ -26,12 +26,12 @@ export const s = (data: any): string => {
       .map(([key, value]) => {
         const result = s(value);
 
-        return result === "null" || !result ? "" : `${key}: ${result}`;
+        return value === "null" || !result ? "" : `${key}: ${result}`;
       })
       .filter(Boolean);
 
     return `${entries.join(";\n")}`;
   }
 
-  return "null";
+  return null;
 };

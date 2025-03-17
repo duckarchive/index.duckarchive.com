@@ -50,8 +50,8 @@ model Person {
   middle_name            String?   @db.VarChar(255) // "стефанов"
   father_name_normalized String?   @db.VarChar(255) // "степан"
   is_male                Boolean? // true – на основі нормалізованого імені
-  birth_date             String    @db.VarChar(255) // "1900"
-  is_birth_date_approx   Boolean   @default(false) // true
+  birth_date             String?   @db.VarChar(255) // "1900"
+  is_birth_date_approx   Boolean?  @default(false) // true
   birth_date_normalized  DateTime? // "1900-01-01T00:00:00.000Z"
   birth_place            String?   @db.VarChar(255) // Полонне, Полонський повіт, Волинська губернія, Російська імперія
   birth_place_lat        Float? // 51.1989

@@ -160,7 +160,6 @@ export const parse: Mapper["parse"] = (content) =>
         box,
         doc_type,
         document_num,
-        documents_pages,
         event_date_from,
         first_name,
         fund_num,
@@ -168,19 +167,25 @@ export const parse: Mapper["parse"] = (content) =>
         last_name,
         middle_name,
         vibitie_mesto,
+        event_place,
         ...rest
       },
     } = item as ContentItem;
 
-    const notes = Object.fromEntries(
-      Object.entries(rest).filter(
-        ([key]) =>
+    const notes = Object.fromEntries([
+      ...Object.entries(rest).filter(
+        ([key, value]) =>
           !key.endsWith("_id") &&
           !key.startsWith("__") &&
           key !== "id" &&
-          key !== "updated"
-      )
-    );
+          key !== "updated" &&
+          key !== "archive" &&
+          key !== "operations" &&
+          value !== "без номера" &&
+          value !== "не уточнено"
+      ),
+      ["url", `/heroes/chelovek_gospital${rest.id}/`],
+    ]);
 
     return {
       first_name,
@@ -194,17 +199,17 @@ export const parse: Mapper["parse"] = (content) =>
         birth_place_np_type,
         birth_place,
       ]),
-      record_date: s(event_date_from),
+      record_date: s(event_date_from) || "",
       record_date_normalized: event_date_from
         ? new Date(event_date_from)
         : null,
-      record_place: vibitie_mesto,
+      record_place: event_place || vibitie_mesto,
       record_type: doc_type,
       archive: archive_short,
-      fund: s(fund_num),
-      description: s(inventory_num || box),
-      case: s(document_num),
-      page: s(documents_pages.pages_id),
+      fund: s(fund_num) || "",
+      description: s(inventory_num || box) || "",
+      case: s(document_num) || "",
+      page: null,
       note: s(notes),
       author_id: "",
       resource_id: "gwar.mil.ru",

@@ -7,14 +7,15 @@ import { Button } from "@heroui/button";
 import Papa from "papaparse";
 
 import useMappers from "@/app/hooks/useMappers";
-import { FileFormat, ParsedFileContent } from "@/types";
+import { FileFormat, InputFileContent, PersonToSave } from "@/types";
 
 const ConverterPanel: React.FC = () => {
   const resourcesWithMappers = useMappers();
   const [activeFileFormat, setActiveFileFormat] = useState<FileFormat>();
   const [activeResource, setActiveResource] = useState<string>();
   const [activeMapper, setActiveMapper] = useState<string>();
-  const [inputContent, setInputContent] = useState<ParsedFileContent>([]);
+  const [inputContent, setInputContent] = useState<InputFileContent>([]);
+  const [parsedContent, setParsedContent] = useState<PersonToSave[]>([]);
 
   useEffect(() => {
     if (!activeFileFormat || !activeResource || !activeMapper) {
@@ -29,9 +30,11 @@ const ConverterPanel: React.FC = () => {
       return;
     }
 
-    const parsedContent = activeMapperInstance.parse(inputContent);
+    const parsed = activeMapperInstance.parse(inputContent);
 
-    console.log(parsedContent);
+    console.log(inputContent, parsed);
+
+    setParsedContent(parsed);
   }, [inputContent]);
 
   const handleFileFormatChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -57,7 +60,7 @@ const ConverterPanel: React.FC = () => {
 
     reader.onload = (event) => {
       const fileContent = event.target?.result;
-      let parsedContent: ParsedFileContent = [];
+      let inputContent: InputFileContent = [];
 
       if (fileContent) {
         if (activeFileFormat === "csv") {
@@ -65,21 +68,21 @@ const ConverterPanel: React.FC = () => {
             header: true,
             dynamicTyping: true,
             complete: (results) => {
-              parsedContent = results.data as ParsedFileContent;
+              inputContent = results.data as InputFileContent;
             },
           });
         } else if (activeFileFormat === "json") {
-          parsedContent = JSON.parse(fileContent as string);
+          inputContent = JSON.parse(fileContent as string);
         }
 
-        setInputContent(parsedContent);
+        setInputContent(inputContent);
       }
     };
     reader.readAsText(file);
   };
 
   const handleDownloadResult = () => {
-    const csv = Papa.unparse(inputContent);
+    const csv = Papa.unparse(parsedContent);
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
