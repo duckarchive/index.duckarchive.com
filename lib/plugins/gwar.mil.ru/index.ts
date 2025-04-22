@@ -4,3 +4,5 @@ export const config = {
   author: "alexandrtovamch",
   cron_rule: "40 3 * * *",
 };
+
+

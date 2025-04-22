@@ -140,6 +140,7 @@ const ConverterPanel: React.FC = () => {
             isReadOnly
             label="Ваші дані"
             placeholder="TODO: Implement file content preview + manual entering"
+            value={JSON.stringify(inputContent[0], null, 2) || ""}
           />
         </div>
         <div className="flex flex-col gap-4 bg-gray-100 dark:bg-gray-900 p-4 rounded-lg basis-1/2">
@@ -148,12 +149,13 @@ const ConverterPanel: React.FC = () => {
             size="lg"
             onPress={handleDownloadResult}
           >
-            Завантажити результат
+            Завантажити CSV результат
           </Button>
           <Textarea
             isReadOnly
             label="Результат"
             placeholder="Результат обробки файлу"
+            value={JSON.stringify(parsedContent[0], null, 2) || ""}
           />
         </div>
       </div>

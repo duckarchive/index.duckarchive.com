@@ -168,6 +168,7 @@ export const parse: Mapper["parse"] = (content) =>
         middle_name,
         vibitie_mesto,
         event_place,
+        documents_pages,
         ...rest
       },
     } = item as ContentItem;
@@ -184,6 +185,7 @@ export const parse: Mapper["parse"] = (content) =>
           value !== "без номера" &&
           value !== "не уточнено"
       ),
+      ...Object.entries(documents_pages),
       ["url", `/heroes/chelovek_gospital${rest.id}/`],
     ]);
 
@@ -206,7 +208,7 @@ export const parse: Mapper["parse"] = (content) =>
       record_place: event_place || vibitie_mesto,
       record_type: doc_type,
       archive: archive_short,
-      fund: s(fund_num) || "",
+      fund: s(fund_num) || "К1", // "Картотека бюро учета потерь в Первой мировой войне (офицеров и солдат)",
       description: s(inventory_num || box) || "",
       case: s(document_num) || "",
       page: null,
