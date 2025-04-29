@@ -1,46 +1,28 @@
 "use client";
 
-import { AgGridReact } from "ag-grid-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@heroui/input";
 import Papa from "papaparse";
-import { useTheme } from "next-themes";
-import { colorSchemeDark, themeQuartz } from "ag-grid-community";
+import { Prisma } from "@prisma/client";
+import {
+  SafeParseError,
+  SafeParseReturnType,
+  SafeParseSuccess,
+  ZodError,
+} from "zod";
 
-import { FileFormat, InputFileContent, PersonToSave } from "@/types";
+import { FileFormat, ParsedFileContent } from "@/types";
 import { PersonCreateManyInputObjectSchema } from "@/prisma/generated/schemas";
+import Table from "@/components/table";
+
+type TableItem = {
+  success: boolean;
+  data: Prisma.PersonCreateManyInput;
+  error?: ZodError<Prisma.PersonCreateManyInput>;
+};
 
 const ImportPanel: React.FC = () => {
-  const { theme } = useTheme();
-  const coloredTheme =
-    theme === "dark" ? themeQuartz.withPart(colorSchemeDark) : themeQuartz;
-  const myTheme = coloredTheme.withParams({
-    spacing: 4,
-  });
-  const [inputContent, setInputContent] = useState<InputFileContent>([]);
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (inputContent.length > 0) {
-      const errors: string[] = [];
-
-      inputContent.forEach((row) => {
-        PersonCreateManyInputObjectSchema.parseAsync({
-          ...row,
-          case: row.case ? row.case.toString() : null,
-          record_id: "mock",
-          record_date: "mock",
-          author_id: "mock",
-        }).catch((error) => {
-          console.error(error);
-        });
-      });
-
-      setValidationErrors(errors);
-    }
-  }, [inputContent]);
-
-  console.log("Validation Errors:", validationErrors);
+  const [inputContent, setInputContent] = useState<TableItem[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,8 +44,31 @@ const ImportPanel: React.FC = () => {
             header: true,
             dynamicTyping: true,
             skipEmptyLines: true,
-            complete: (results) => {
-              setInputContent(results.data as InputFileContent);
+            complete: ({ data: rows }: { data: ParsedFileContent }) => {
+              if (rows.length > 0) {
+                const validationResults = rows.map((row) => {
+                  const validationRes =
+                    PersonCreateManyInputObjectSchema.safeParse({
+                      ...row,
+                      case: row.case ? row.case.toString() : null,
+                      record_id: "mock",
+                      record_date: "mock",
+                      // author_id: "mock",
+                    });
+
+                  return {
+                    success: validationRes.success,
+                    data: validationRes.success
+                      ? validationRes.data
+                      : (row as Prisma.PersonCreateManyInput),
+                    error: validationRes.success
+                      ? undefined
+                      : validationRes.error,
+                  };
+                });
+
+                setInputContent(validationResults);
+              }
             },
           });
         }
@@ -71,6 +76,8 @@ const ImportPanel: React.FC = () => {
     };
     reader.readAsText(file);
   };
+
+  console.log("inputContent", inputContent);
 
   return (
     <section className="flex flex-col gap-4">
@@ -83,24 +90,24 @@ const ImportPanel: React.FC = () => {
         />
       </div>
       <div style={{ height: 500 }}>
-        <AgGridReact<PersonToSave>
-          columnDefs={[
+        <Table<TableItem>
+          columns={[
             { headerName: "#", valueGetter: "node.rowIndex + 1", width: 70 },
-            { field: "last_name", headerName: "Прізвище" },
-            { field: "first_name", headerName: "Ім'я" },
-            { field: "middle_name", headerName: "По батькові" },
-            { field: "birth_date", headerName: "Дата народження" },
-            { field: "birth_place", headerName: "Місце народження" },
-            { field: "record_date", headerName: "Дата запису" },
-            { field: "record_place", headerName: "Місце запису" },
-            { field: "record_type", headerName: "Тип запису" },
-            { field: "archive", headerName: "Архів" },
-            { field: "fund", headerName: "Фонд" },
-            { field: "description", headerName: "Опис" },
-            { field: "case", headerName: "Справа" },
-            { field: "page", headerName: "Сторінка" },
+            { field: "data.last_name", headerName: "Прізвище" },
+            { field: "data.first_name", headerName: "Ім'я" },
+            { field: "data.middle_name", headerName: "По батькові" },
+            { field: "data.birth_date", headerName: "Дата народження" },
+            { field: "data.birth_place", headerName: "Місце народження" },
+            { field: "data.record_date", headerName: "Дата запису" },
+            { field: "data.record_place", headerName: "Місце запису" },
+            { field: "data.record_type", headerName: "Тип запису" },
+            { field: "data.archive", headerName: "Архів" },
+            { field: "data.fund", headerName: "Фонд" },
+            { field: "data.description", headerName: "Опис" },
+            { field: "data.case", headerName: "Справа" },
+            { field: "data.page", headerName: "Сторінка" },
             {
-              field: "note",
+              field: "data.note",
               headerName: "Примітки",
               cellStyle: {
                 textOverflow: "ellipsis",
@@ -111,8 +118,12 @@ const ImportPanel: React.FC = () => {
               width: 500,
             },
           ]}
-          rowData={inputContent as any}
-          theme={myTheme}
+          rows={inputContent}
+          getRowStyle={(params: any) => {
+            if (!params.data.success) {
+              return { color: "red" };
+            }
+          }}
         />
       </div>
     </section>

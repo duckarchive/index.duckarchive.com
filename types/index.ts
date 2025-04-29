@@ -1,5 +1,6 @@
 import { Person } from "@prisma/client";
 import { SVGProps } from "react";
+import { SafeParseReturnType } from "zod";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -10,7 +11,7 @@ export enum FileFormat {
   JSON = "json",
 }
 
-export type InputFileContent = Record<string, any>[];
+export type ParsedFileContent = Record<string, any>[];
 
 export type PersonToSave = Omit<
   Person,
@@ -35,5 +36,5 @@ export type PersonToSave = Omit<
 export type Mapper = {
   title: string;
   format: FileFormat;
-  parse: (content: InputFileContent) => PersonToSave[];
+  parse: (content: ParsedFileContent) => PersonToSave[];
 };
