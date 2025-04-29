@@ -1,16 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Select, SelectItem } from "@heroui/select";
-import { Input, Textarea } from "@heroui/input";
-import { Button } from "@heroui/button";
-import Papa from "papaparse";
 import { AgGridReact } from "ag-grid-react";
+import { useEffect, useState } from "react";
+import { Input } from "@heroui/input";
+import Papa from "papaparse";
+import { useTheme } from "next-themes";
+import { colorSchemeDark, themeQuartz } from "ag-grid-community";
 
 import { FileFormat, InputFileContent, PersonToSave } from "@/types";
+import { PersonCreateManyInputObjectSchema } from "@/prisma/generated/schemas";
 
 const ImportPanel: React.FC = () => {
+  const { theme } = useTheme();
+  const coloredTheme =
+    theme === "dark" ? themeQuartz.withPart(colorSchemeDark) : themeQuartz;
+  const myTheme = coloredTheme.withParams({
+    spacing: 4,
+  });
   const [inputContent, setInputContent] = useState<InputFileContent>([]);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (inputContent.length > 0) {
+      const errors: string[] = [];
+
+      inputContent.forEach((row) => {
+        PersonCreateManyInputObjectSchema.parseAsync({
+          ...row,
+          case: row.case ? row.case.toString() : null,
+          record_id: "mock",
+          record_date: "mock",
+          author_id: "mock",
+        }).catch((error) => {
+          console.error(error);
+        });
+      });
+
+      setValidationErrors(errors);
+    }
+  }, [inputContent]);
+
+  console.log("Validation Errors:", validationErrors);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,10 +57,11 @@ const ImportPanel: React.FC = () => {
       const fileFormat = fileName.split(".").pop() as FileFormat;
 
       if (fileContent) {
-        if (fileFormat === "csv") {
+        if (fileFormat === FileFormat.CSV) {
           Papa.parse(file, {
             header: true,
             dynamicTyping: true,
+            skipEmptyLines: true,
             complete: (results) => {
               setInputContent(results.data as InputFileContent);
             },
@@ -71,12 +102,17 @@ const ImportPanel: React.FC = () => {
             {
               field: "note",
               headerName: "Примітки",
-              cellStyle: { "white-space": "normal", lineHeight: "1" },
-              autoHeight: true,
-              width: 200,
+              cellStyle: {
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                padding: 0,
+              },
+              width: 500,
             },
           ]}
           rowData={inputContent as any}
+          theme={myTheme}
         />
       </div>
     </section>

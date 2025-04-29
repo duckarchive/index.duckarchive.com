@@ -182,6 +182,7 @@ export const parse: Mapper["parse"] = (content) =>
           key !== "updated" &&
           key !== "archive" &&
           key !== "operations" &&
+          key !== "person_type" &&
           value !== "без номера" &&
           value !== "не уточнено"
       ),
@@ -210,7 +211,7 @@ export const parse: Mapper["parse"] = (content) =>
       archive: archive_short,
       fund: s(fund_num) || "К1", // "Картотека бюро учета потерь в Первой мировой войне (офицеров и солдат)",
       description: s(inventory_num || box) || "",
-      case: s(document_num) || "",
+      case: s(document_num) || "1",
       page: null,
       note: s(notes),
       author_id: "",
