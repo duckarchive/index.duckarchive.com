@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@duckarchive/framework": "github:duckarchive/framework",
+    "@duckarchive/prisma": "github:duckarchive/prisma",
     "@heroui/button": "2.2.13",
     "@heroui/code": "2.2.10",
     "@heroui/input": "2.4.13",
@@ -66,5 +68,8 @@
     "tailwind-variants": "0.3.0",
     "tailwindcss": "3.4.16",
     "typescript": "5.6.3"
+  },
+  "prisma": {
+    "schema": "node_modules/@duckarchive/prisma/prisma/duckkey/schema.prisma"
   }
 }

@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { Input } from "@heroui/input";
 import Papa from "papaparse";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@duckarchive/prisma";
 import {
   SafeParseError,
   SafeParseReturnType,
   SafeParseSuccess,
   ZodError,
 } from "zod";
+import { PersonCreateManyInputObjectSchema } from "@duckarchive/prisma/prisma/duckkey/generated/schemas";
 
 import { FileFormat, ParsedFileContent } from "@/types";
-import { PersonCreateManyInputObjectSchema } from "@/prisma/generated/schemas";
 import Table from "@/components/table";
 
 type TableItem = {

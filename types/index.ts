@@ -1,4 +1,4 @@
-import { Person } from "@prisma/client";
+import { Person } from "@duckarchive/prisma";
 import { SVGProps } from "react";
 import { SafeParseReturnType } from "zod";
 
