@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
-    "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "prisma:generate": "PRISMA_CLIENT_OUTPUT=\"$(pwd)/generated/prisma/client\" prisma generate",
+    "postinstall": "npm run prisma:generate"
   },
   "dependencies": {
     "@duckarchive/framework": "github:duckarchive/framework",
