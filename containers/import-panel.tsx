@@ -10,7 +10,7 @@ import {
   SafeParseSuccess,
   ZodError,
 } from "zod";
-import { PersonCreateManyInputObjectSchema } from "@duckarchive/prisma/prisma/duckkey/generated/schemas";
+import { PersonCreateManyInputObjectSchema } from "@/generated/prisma/client/schemas";
 
 import { FileFormat, ParsedFileContent } from "@/types";
 import Table from "@/components/table";
