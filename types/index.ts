@@ -1,6 +1,5 @@
-import { Person } from "@duckarchive/prisma";
+import { Person } from "@/generated/prisma/client/client";
 import { SVGProps } from "react";
-import { SafeParseReturnType } from "zod";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;

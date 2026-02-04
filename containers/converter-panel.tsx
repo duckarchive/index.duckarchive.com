@@ -7,14 +7,14 @@ import { Button } from "@heroui/button";
 import Papa from "papaparse";
 
 import useMappers from "@/app/hooks/useMappers";
-import { FileFormat, InputFileContent, PersonToSave } from "@/types";
+import { FileFormat, PersonToSave } from "@/types";
 
 const ConverterPanel: React.FC = () => {
   const resourcesWithMappers = useMappers();
   const [activeFileFormat, setActiveFileFormat] = useState<FileFormat>();
   const [activeResource, setActiveResource] = useState<string>();
   const [activeMapper, setActiveMapper] = useState<string>();
-  const [inputContent, setInputContent] = useState<InputFileContent>([]);
+  const [inputContent, setInputContent] = useState<any[]>([]);
   const [parsedContent, setParsedContent] = useState<PersonToSave[]>([]);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const ConverterPanel: React.FC = () => {
 
     reader.onload = (event) => {
       const fileContent = event.target?.result;
-      let inputContent: InputFileContent = [];
+      let inputContent: any[] = [];
 
       if (fileContent) {
         if (activeFileFormat === "csv") {
@@ -68,7 +68,7 @@ const ConverterPanel: React.FC = () => {
             header: true,
             dynamicTyping: true,
             complete: (results) => {
-              inputContent = results.data as InputFileContent;
+              inputContent = results.data as any[];
             },
           });
         } else if (activeFileFormat === "json") {
